@@ -1,7 +1,7 @@
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
-
+import os
 # -----------------------------------------
 # 1️⃣ Sample Documents
 # -----------------------------------------
@@ -28,23 +28,36 @@ embedding_model = HuggingFaceEmbeddings(
 # 3️⃣ Create Vector Store
 # -----------------------------------------
 
-vectorstore = Chroma.from_documents(
+persist_dir = "./chroma_db"
+
+# ------------------------------------------------------------------
+# for this simple demo we don't want stale/duplicate entries
+# every time the script runs, so delete the folder if it exists
+# (in a production app you might keep the store and instead check
+# for duplicates before inserting new documents).
+# ------------------------------------------------------------------
+import shutil
+if os.path.exists(persist_dir):
+    print(f"removing existing store at {persist_dir} to avoid duplicates")
+    shutil.rmtree(persist_dir)
+
+# always build from scratch for the sample documents
+vector_store = Chroma.from_documents(
     documents=docs,
     embedding=embedding_model,
-    persist_directory="./chroma_db"
+    persist_directory=persist_dir
 )
-
-print("Vector database created successfully.")
+vector_store.persist()
 
 # -----------------------------------------
 # 4️⃣ Similarity Search Function
 # -----------------------------------------
 
-def search_query(query, top_k=2):
+def search_query(query, top_k=1):
     print(f"\n🔎 Query: {query}")
     print(f"Top-K: {top_k}")
 
-    results = vectorstore.similarity_search(query, k=top_k)
+    results = vector_store.similarity_search(query, k=top_k)
 
     for i, result in enumerate(results):
         print(f"\nResult {i+1}:")
