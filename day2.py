@@ -29,7 +29,7 @@ embedding_model = HuggingFaceEmbeddings(
 # -----------------------------------------
 
 persist_dir = "./chroma_db"
-# every time the script runs, so delete the folder if it exist
+# every time the script runs it duplicates, so delete the folder if it exist
 # ------------------------------------------------------------------
 import shutil
 if os.path.exists(persist_dir):
