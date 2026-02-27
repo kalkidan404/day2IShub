@@ -29,12 +29,7 @@ embedding_model = HuggingFaceEmbeddings(
 # -----------------------------------------
 
 persist_dir = "./chroma_db"
-
-# ------------------------------------------------------------------
-# for this simple demo we don't want stale/duplicate entries
-# every time the script runs, so delete the folder if it exists
-# (in a production app you might keep the store and instead check
-# for duplicates before inserting new documents).
+# every time the script runs, so delete the folder if it exist
 # ------------------------------------------------------------------
 import shutil
 if os.path.exists(persist_dir):
